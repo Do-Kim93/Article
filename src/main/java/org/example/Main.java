@@ -1,8 +1,6 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -30,15 +28,48 @@ public class Main {
                 System.out.println(id + "번째 글이 작성 되었습니다");
                 lastid++;
             } else if (cmd.equals("article list")) {
-                System.out.println("==게시글 목록==");
-                if (articles.size() == 0) {
-                    System.out.println("아무것도 없음");
+                System.out.println("검색어를 활용 하시겠습니까? y/n");
+                String answer = sc.nextLine().trim();
+                if (answer.equals("y")) {
+                    System.out.println("제목/내용,검색어 입력 \n ex) 제목-눈 또는 내용-꽃");
+                    String answer2 = sc.nextLine().trim();
+                    String[] answers;
+                    try {
+                        answers = answer2.split("-");
+                    } catch (Exception e) {
+                        System.out.println("잘못 입력하셨습니다.");
+                        return;
+                    }
+                    String key = answers[0];
+                    String value = answers[1];
+                    System.out.println(value);
+                    if (key.equals("제목")) {
+                        for (Article article : articles) {
+                            if (article.getTitle().contains(value)) {
+                                System.out.println(article.getId() + "   /   " + article.getTitle() + "   /   " + article.getContent());
+                            }
+                        }
+                        System.out.println("해당 제목의 글이 존재하지 않습니다.");
+                    } else if (key.equals("내용")) {
+                        for (Article article : articles) {
+                            if (article.getContent().contains(value)) {
+                                System.out.println(article.getId() + "   /   " + article.getTitle() + "   /   " + article.getContent());
+                            }
+                        }
+                        System.out.println("해당 내용의 글이 존재하지 않습니다.");
+                    }
+                } else {
+                    System.out.println("==게시글 목록==");
+                    if (articles.isEmpty()) {
+                        System.out.println("아무것도 없음");
+                    }
+                    System.out.println("번호   /   제목   /   내용    ");
+                    for (int i = articles.size() - 1; i >= 0; i--) {
+                        Article article = articles.get(i);//Article 모양의 변수 article에 articles의 값들을 전달
+                        System.out.println(article.getId() + "   /   " + article.getTitle() + "   /   " + article.getContent());
+                    }
                 }
-                System.out.println("번호   /   제목   /   내용    ");
-                for (int i = articles.size() - 1; i >= 0; i--) {
-                    Article article = articles.get(i);//Article 모양의 변수 article에 articles의 값들을 전달
-                    System.out.println(article.getId() + "   /   " + article.getTitle() + "   /   " + article.getContent());
-                }
+
             } else if (cmd.startsWith("article detail")) {
                 int id = Integer.parseInt(cmd.split(" ")[2]);
                 for (Article article : articles) {
@@ -46,7 +77,7 @@ public class Main {
                         System.out.println("번호 : " + article.getId());
                         System.out.println("제목 : " + article.getTitle());
                         System.out.println("내용 : " + article.getContent());
-                    }else {
+                    } else {
                         System.out.println("없는 번호 입니다.");
                     }
                 }
@@ -56,15 +87,13 @@ public class Main {
                 for (Article article : articles) {
                     if (article.getId() == id) {
                         articles.remove(article);
-                        System.out.println(id+"번 게시글이 삭제 되었습니다");
-                    }else{
-                        System.out.println("해당 번호의 게시글이 없습니다.");
+                        System.out.println(id + "번 게시글이 삭제 되었습니다");
                     }
                 }
             } else if (cmd.startsWith("article update")) {
                 int id = Integer.parseInt(cmd.split(" ")[2]);
-                System.out.println("기존제목 : "+articles.get(id-1).getTitle());
-                System.out.println("기존내용 : "+articles.get(id-1).getContent());
+                System.out.println("기존제목 : " + articles.get(id - 1).getTitle());
+                System.out.println("기존내용 : " + articles.get(id - 1).getContent());
                 System.out.print("제목 : ");
                 String newTitle = sc.nextLine().trim();
                 System.out.print("내용 : ");
@@ -83,6 +112,7 @@ public class Main {
         sc.close();
     }
 }
+
 
 class Article {
 
